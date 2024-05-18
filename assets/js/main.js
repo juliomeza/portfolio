@@ -267,4 +267,42 @@
    */
   new PureCounter();
 
+  /**
+   * Circle progress animation
+   */
+  document.addEventListener('DOMContentLoaded', function() {
+    var circles = document.querySelectorAll('.circle');
+  
+    var observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          var circle = entry.target;
+          var value = circle.getAttribute('data-value');
+          var bar = new ProgressBar.Circle(circle, {
+            color: '#0563bb',
+            trailColor: '#f4f4f4',
+            strokeWidth: 10,
+            duration: 1400,
+            easing: 'bounce',
+            from: { color: '#0563bb', width: 10, a: 0 },
+            to: { color: '#0563bb', width: 10, a: -1 },
+            step: function(state, circle) {
+              circle.path.setAttribute('stroke', state.color);
+              circle.path.setAttribute('stroke-width', state.width);
+            }
+          });
+          bar.animate(value);  // Número de 0.0 a 1.0
+          observer.unobserve(circle); // Detener la observación una vez animado
+        }
+      });
+    }, {
+      threshold: 0.5 // Ajusta el umbral a tu necesidad, 0.5 significa que cuando el 50% del elemento es visible
+    });
+  
+    circles.forEach(circle => {
+      observer.observe(circle);
+    });
+  });
+  
+
 })()
